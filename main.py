@@ -20,6 +20,9 @@ def check_pwd():
             wspace_count += 1
         else:
             special_count += 1
+
+        if None:
+            return "input a passwords"
     
     if lower_count >= 1:
         strength += 1
@@ -31,11 +34,6 @@ def check_pwd():
         strength += 1
     if special_count >= 1:
         strength += 1
-
- # Minimum length check
-    if len(password) <= 9:
-        messagebox.showwarning("Weak Password", "Password should be at least 10 characters long.")
-        return
 
     if strength == 1:
         remarks = "VERY BAD: Are you tryna get hacked my boy?"
@@ -92,4 +90,4 @@ check_button.pack()
 root.mainloop()
 
 
-
+# comments
