@@ -1,93 +1,63 @@
-import string
-import getpass
 import tkinter as tk
 from tkinter import messagebox
+import string
 
-def check_pwd():
-    password = getpass.getpass("Enter Password: ")
-    strength = 0
-    remarks = ''
-    lower_count = upper_count = num_count =wspace_count = special_count = word_count = 0
+def check_password():
+    password = password_entry.get()
 
-    for char in list(password):
-        if char in string.ascii_lowercase:
-            lower_count += 1
-        elif char in string.ascii_uppercase:
-            upper_count += 1
-        elif char in string.digits:
-            num_count += 1
-        elif char == '':
-            wspace_count += 1
-        else:
-            special_count += 1
-
-        if None:
-            return "input a passwords"
-    
-    if lower_count >= 1:
-        strength += 1
-    if upper_count >= 1:
-        strength += 1
-    if num_count >= 1:
-        strength += 1
-    if wspace_count >= 1:
-        strength += 1
-    if special_count >= 1:
-        strength += 1
-
-    if strength == 1:
-        remarks = "VERY BAD: Are you tryna get hacked my boy?"
-    elif strength == 2:
-        remarks = "BAD: What is this weak sauce!"
-    elif strength == 3:
-        remarks = "WEAK: Trash but passable"
-    elif strength == 4:
-        remarks = "HARD: Mid but we could be better"
-    elif strength == 5:
-        remarks = "VERY STRONG: Solid, you aight"
-    
-    print('Your password has: ')
-    print(f"{lower_count} lowercase characters")
-    print(f"{upper_count} uppercase characters")
-    print(f"{num_count} numeric characters")
-    print(f"{wspace_count} whitespace characters")
-    print(f"{special_count} special characters")
-
-    print(f"Password Strength: {strength}")
-    print(f"Hint: {remarks}")
-    
-    def ask_pwd(another_pwd=False):
-        valid = False
-        if another_pwd:
-            choice = input('Do you want to enter another password (y/n): ')
-        else:
-            choice=input('Do you want to check password strength (y/n): ')
-        while not valid:
-            if choice.lower() == 'y':
-                return True
-            elif choice.lower() == 'n':
-                return False
-            else:
-                print('Invalid, Try Again')
-
-    #Place GUI Here
+    # Maximum char count
+    if len(password) > 128:
+        messagebox.showwarning("Weak Password", "Password should not exceed 128 characters.")
+        return
      
-   # Create the main window
-root = tk.Tk()
-root.title("Password Strength Checker")
+    # Minimum char count
+    if len(password) <= 10:
+        messagebox.showwarning("Weak Password", " Weak Password, Increase character count.")
+        return
+    
+    # Minimum numeric count
+    if not any(char.isdigit() for char in password):
+        messagebox.showwarning("Weak Password", "Weak Password, No numeric characters.")
+        return
+    
+    #Minimum uppercase count
+    if not any(char.isupper() for char in password):
+        messagebox.showwarning("Weak Password", "Weak Password, No uppercase characters.")
+        return
+  
+    #Minimum lowercase count
+    if not any(char.islower() for char in password):
+        messagebox.showwarning("Weak Password", "Weak Password, No lowercase characters.")
+        return
+    
+    #Special char count
+    special_characters = set(string.punctuation)
+    if sum(1 for char in password if char in special_characters) < 1:
+        messagebox.showwarning("Weak Password", "Weak Password, Include at least one special character.")
+        return
+    
+    #Check for not more than 2 identical characters in a row
+    for i in range(len(password) - 2):
+        if password[i] == password[i+1] == password[i+2]:
+            messagebox.showwarning("Weak Password", "Weak Password, More than 2 identical characters in a row.")
+            return
+    
+    # All password criteria is met
+    messagebox.showinfo("Strong Password", "Password is strong and meets all criteria!")
 
-# Create a label and entry for the password
-password_label = tk.Label(root, text="Enter Password:")
+# Create main window
+root = tk.Tk()
+root.title("OWASP Password Checker")
+
+# Create password label and entry
+password_label = tk.Label(root, text="Please Enter Password:")
 password_label.pack()
 password_entry = tk.Entry(root, show="*")
 password_entry.pack()
 
-# Create a button to check the password
-check_button = tk.Button(root, text="Check Password", command=check_pwd())
+# Create check button
+check_button = tk.Button(root, text="Check Password", command=check_password)
 check_button.pack()
 
-# Run the Tkinter event loop
+# Run the main event loop
 root.mainloop()
-
-
-# comments
